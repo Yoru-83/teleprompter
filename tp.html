@@ -13,9 +13,10 @@ body{background:#0c0c1e;color:#cfcfd5;font-family:system-ui,-apple-system,sans-s
 #b button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#ddd;border-radius:8px;padding:6px 14px;font-size:18px;cursor:pointer;touch-action:manipulation}
 #b .s{font-size:12px;color:rgba(255,255,255,.4);padding:0 4px}
 #w{font-size:14px;color:rgba(255,255,255,.4);padding:0 8px}
-#s{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0c0c1e;color:#999;font-size:18px;z-index:10}
+#s{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0c0c1e;color:#999;font-size:18px;z-index:10}
+#d{font-size:12px;color:#555;margin-top:1em;padding:0 2em;word-break:break-all;text-align:center}
 </style>
-<div id=s>Cargando...</div>
+<div id=s><div id=m>Cargando...</div><div id=d></div></div>
 <div id=x></div>
 <div id=b style=display:none>
 <button id=p>▶</button>
@@ -25,25 +26,31 @@ body{background:#0c0c1e;color:#cfcfd5;font-family:system-ui,-apple-system,sans-s
 <span id=w>0/0</span>
 </div>
 <script>
-var p=new URLSearchParams(location.search),t=p.get("t");
-if(!t){document.querySelector("#s").textContent="Error: falta texto";throw"no t"}
-t=t.replace(/\+/g," ");
-var w=t.match(/\S+/g)||[],sp=0,pl=0,T,spd=300,fs=22,x=document.querySelector("#x");
-if(!w.length){document.querySelector("#s").textContent="Texto vacío";return}
-x.innerHTML="<span></span>".repeat(w.length);
-for(var i=0;i<w.length;i++)x.children[i].textContent=w[i];
-var c=x.children;
-function H(){for(var i=0;i<c.length;i++)c[i].className=i==sp?"c":"";document.querySelector("#w").textContent=(sp+1)+"/"+c.length}
+var q = new URLSearchParams(location.search), t = q.get("t");
+if (!t && location.hash.length > 1) t = decodeURIComponent(location.hash.slice(1));
+if (!t) {
+  document.querySelector("#m").textContent = "Error: sin texto";
+  document.querySelector("#d").textContent = "URL: " + location.href;
+  throw "no text"
+}
+t = t.replace(/\+/g, " ");
+var w = t.match(/\S+/g) || [], sp = 0, pl = 0, T, spd = 300, fs = 22, x = document.querySelector("#x");
+if (!w.length) { document.querySelector("#m").textContent = "Texto vacío"; throw "empty" }
+x.innerHTML = "<span></span>".repeat(w.length);
+for (var i = 0; i < w.length; i++) x.children[i].textContent = w[i];
+var c = x.children;
+function H() { for (var i = 0; i < c.length; i++) c[i].className = i == sp ? "c" : ""; document.querySelector("#w").textContent = (sp + 1) + "/" + c.length }
 H();
-function N(){sp<c.length-1?(sp++,H()):P()}
-function P(){pl=0;if(T){clearInterval(T);T=null}document.querySelector("#p").textContent="▶"}
-function U(){if(pl){P();pl=1;T=setInterval(N,spd);document.querySelector("#p").textContent="⏸"}}
-document.querySelector("#b").style.display="flex";document.querySelector("#s").style.display="none";
-document.querySelector("#p").onclick=function(){if(pl)P();else{pl=1;this.textContent="⏸";T=setInterval(N,spd)}};
-document.querySelector("#r").onclick=function(){P();sp=0;H();x.scrollTop=0};
-document.querySelector("#vp").onclick=function(){spd=Math.max(50,spd-30);U()};
-document.querySelector("#vm").onclick=function(){spd=Math.min(2000,spd+30);U()};
-document.querySelector("#fp").onclick=function(){fs=Math.min(60,fs+2);x.style.fontSize=fs+"px"};
-document.querySelector("#fm").onclick=function(){fs=Math.max(12,fs-2);x.style.fontSize=fs+"px"};
+function N() { sp < c.length - 1 ? (sp++, H()) : P() }
+function P() { pl = 0; if (T) { clearInterval(T); T = null } document.querySelector("#p").textContent = "▶" }
+function U() { if (pl) { P(); pl = 1; T = setInterval(N, spd); document.querySelector("#p").textContent = "⏸" } }
+document.querySelector("#b").style.display = "flex";
+document.querySelector("#s").style.display = "none";
+document.querySelector("#p").onclick = function () { if (pl) P(); else { pl = 1; this.textContent = "⏸"; T = setInterval(N, spd) } };
+document.querySelector("#r").onclick = function () { P(); sp = 0; H(); x.scrollTop = 0 };
+document.querySelector("#vp").onclick = function () { spd = Math.max(50, spd - 30); U() };
+document.querySelector("#vm").onclick = function () { spd = Math.min(2000, spd + 30); U() };
+document.querySelector("#fp").onclick = function () { fs = Math.min(60, fs + 2); x.style.fontSize = fs + "px" };
+document.querySelector("#fm").onclick = function () { fs = Math.max(12, fs - 2); x.style.fontSize = fs + "px" };
 </script>
 </html>
