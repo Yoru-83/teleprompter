@@ -23,14 +23,11 @@ body{background:#0c0c1e;color:#cfcfd5;font-family:system-ui,-apple-system,sans-s
 </div>
 <script>
 var u=new URLSearchParams(location.search).get("u");
-if(!u){document.querySelector("#s").textContent="Error: falta parámetro u";throw"no u"}
-var px=["https://api.allorigins.win/get?url=","https://api.codetabs.com/v1/proxy?quest="];
-function f(n){
-if(n>=px.length){document.querySelector("#s").textContent="Error al cargar texto";return}
-fetch(px[n]+encodeURIComponent(u)).then(function(r){
-if(px[n].indexOf("allorigins")>-1)return r.json().then(function(d){return d.contents});
-return r.text()}).then(function(t){
-var w=t.match(/\S+/g)||[],s=0,pl=0,T,x=document.querySelector("#x");
+if(!u){document.querySelector("#s").textContent="Error: falta u";throw"no u"}
+var s=document.createElement("script");
+s.src=u;
+s.onload=function(){
+var w=TP_DATA.match(/\S+/g)||[],s=0,pl=0,T,x=document.querySelector("#x");
 x.innerHTML="<span></span>".repeat(w.length);
 for(var i=0;i<w.length;i++)x.children[i].textContent=w[i];
 var c=x.children;
@@ -41,8 +38,8 @@ function P(){pl=0;if(T){clearInterval(T);T=null}document.querySelector("#p").tex
 document.querySelector("#b").style.display="flex";document.querySelector("#s").style.display="none";
 document.querySelector("#p").onclick=function(){if(pl)P();else{pl=1;this.textContent="⏸";T=setInterval(N,Math.max(100,300))}};
 document.querySelector("#r").onclick=function(){P();s=0;H();x.scrollTop=0};
-}).catch(function(){f(n+1)});
-}
-f(0);
+};
+s.onerror=function(){document.querySelector("#s").textContent="Error al cargar texto"};
+document.body.appendChild(s);
 </script>
 </html>
