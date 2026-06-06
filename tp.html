@@ -41,7 +41,7 @@ for (var i = 0; i < w.length; i++) x.children[i].textContent = w[i];
 var c = x.children;
 function H() { for (var i = 0; i < c.length; i++) c[i].className = i == sp ? "c" : ""; document.querySelector("#w").textContent = (sp + 1) + "/" + c.length }
 H(); S();
-function S() { var e = c[sp]; if (!e) return; var r = e.getBoundingClientRect(), h = window.innerHeight; if (r.bottom > h * 0.75 || r.top < 0) x.scrollTop += r.top - h * 0.3 }
+function S() { var e = c[sp]; if (!e) return; var r = e.getBoundingClientRect(), h = window.innerHeight; if (r.bottom > h * 0.75 || r.top < 0) x.scrollBy({ top: r.top - h * 0.3, behavior: 'smooth' }) }
 function N() { sp < c.length - 1 ? (sp++, H(), S()) : P() }
 function P() { pl = 0; if (T) { clearInterval(T); T = null } document.querySelector("#p").textContent = "▶" }
 function U() { if (pl) { P(); pl = 1; T = setInterval(N, spd); document.querySelector("#p").textContent = "⏸" } }
