@@ -25,15 +25,11 @@ body{background:#0c0c1e;color:#cfcfd5;font-family:system-ui,-apple-system,sans-s
 <span id=w>0/0</span>
 </div>
 <script>
-var u=new URLSearchParams(location.search).get("u");
-if(!u){document.querySelector("#s").textContent="Error: falta u";throw"no u"}
-var px=["https://api.allorigins.win/get?url=","https://api.codetabs.com/v1/proxy?quest="];
-function f(n){
-if(n>=px.length){document.querySelector("#s").textContent="Error al cargar texto";return}
-var isA=px[n].indexOf("allorigins")>-1;
-fetch(px[n]+encodeURIComponent(u)).then(function(r){return isA?r.json():r.text()}).then(function(d){
-var t=isA?d.contents:d;
+var p=new URLSearchParams(location.search),t=p.get("t");
+if(!t){document.querySelector("#s").textContent="Error: falta texto";throw"no t"}
+t=t.replace(/\+/g," ");
 var w=t.match(/\S+/g)||[],sp=0,pl=0,T,spd=300,fs=22,x=document.querySelector("#x");
+if(!w.length){document.querySelector("#s").textContent="Texto vacío";return}
 x.innerHTML="<span></span>".repeat(w.length);
 for(var i=0;i<w.length;i++)x.children[i].textContent=w[i];
 var c=x.children;
@@ -49,8 +45,5 @@ document.querySelector("#vp").onclick=function(){spd=Math.max(50,spd-30);U()};
 document.querySelector("#vm").onclick=function(){spd=Math.min(2000,spd+30);U()};
 document.querySelector("#fp").onclick=function(){fs=Math.min(60,fs+2);x.style.fontSize=fs+"px"};
 document.querySelector("#fm").onclick=function(){fs=Math.max(12,fs-2);x.style.fontSize=fs+"px"};
-}).catch(function(){f(n+1)});
-}
-f(0);
 </script>
 </html>
