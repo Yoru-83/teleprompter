@@ -7,11 +7,12 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0c0c1e;color:#cfcfd5;font-family:system-ui,-apple-system,sans-serif;height:100dvh;display:flex;flex-direction:column}
 #x{flex:1;overflow:auto;text-align:center;padding:8vh 5vw;font-size:clamp(18px,5vw,40px);line-height:1.8;-webkit-overflow-scrolling:touch}
-#x span{display:inline;opacity:.4;transition:opacity .2s}
+#x span{display:inline;opacity:.4;transition:opacity .2s;margin-right:.25em}
 #x span.c{opacity:1;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-#b{display:flex;gap:8px;justify-content:center;align-items:center;padding:12px;background:rgba(255,255,255,.03)}
-#b button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#ddd;border-radius:8px;padding:8px 24px;font-size:20px;cursor:pointer;touch-action:manipulation}
-#w{font-size:14px;color:rgba(255,255,255,.4)}
+#b{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:center;padding:10px;background:rgba(255,255,255,.03)}
+#b button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#ddd;border-radius:8px;padding:6px 14px;font-size:18px;cursor:pointer;touch-action:manipulation}
+#b .s{font-size:12px;color:rgba(255,255,255,.4);padding:0 4px}
+#w{font-size:14px;color:rgba(255,255,255,.4);padding:0 8px}
 #s{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0c0c1e;color:#999;font-size:18px;z-index:10}
 </style>
 <div id=s>Cargando...</div>
@@ -19,6 +20,8 @@ body{background:#0c0c1e;color:#cfcfd5;font-family:system-ui,-apple-system,sans-s
 <div id=b style=display:none>
 <button id=p>▶</button>
 <button id=r>↺</button>
+<span class=s>Vel</span><button id=vm>−</button><button id=vp>+</button>
+<span class=s>Tam</span><button id=fm>−</button><button id=fp>+</button>
 <span id=w>0/0</span>
 </div>
 <script>
@@ -27,17 +30,22 @@ if(!u){document.querySelector("#s").textContent="Error: falta u";throw"no u"}
 var s=document.createElement("script");
 s.src=u;
 s.onload=function(){
-var w=TP_DATA.match(/\S+/g)||[],s=0,pl=0,T,x=document.querySelector("#x");
+var w=TP_DATA.match(/\S+/g)||[],sp=0,pl=0,T,spd=300,fs=22,x=document.querySelector("#x");
 x.innerHTML="<span></span>".repeat(w.length);
 for(var i=0;i<w.length;i++)x.children[i].textContent=w[i];
 var c=x.children;
-function H(){for(var i=0;i<c.length;i++)c[i].className=i==s?"c":"";document.querySelector("#w").textContent=(s+1)+"/"+c.length}
+function H(){for(var i=0;i<c.length;i++)c[i].className=i==sp?"c":"";document.querySelector("#w").textContent=(sp+1)+"/"+c.length}
 H();
-function N(){s<c.length-1?(s++,H()):P()}
+function N(){sp<c.length-1?(sp++,H()):P()}
 function P(){pl=0;if(T){clearInterval(T);T=null}document.querySelector("#p").textContent="▶"}
+function U(){if(pl){P();pl=1;T=setInterval(N,spd);document.querySelector("#p").textContent="⏸"}}
 document.querySelector("#b").style.display="flex";document.querySelector("#s").style.display="none";
-document.querySelector("#p").onclick=function(){if(pl)P();else{pl=1;this.textContent="⏸";T=setInterval(N,Math.max(100,300))}};
-document.querySelector("#r").onclick=function(){P();s=0;H();x.scrollTop=0};
+document.querySelector("#p").onclick=function(){if(pl)P();else{pl=1;this.textContent="⏸";T=setInterval(N,spd)}};
+document.querySelector("#r").onclick=function(){P();sp=0;H();x.scrollTop=0};
+document.querySelector("#vp").onclick=function(){spd=Math.max(50,spd-30);U()};
+document.querySelector("#vm").onclick=function(){spd=Math.min(2000,spd+30);U()};
+document.querySelector("#fp").onclick=function(){fs=Math.min(60,fs+2);x.style.fontSize=fs+"px"};
+document.querySelector("#fm").onclick=function(){fs=Math.max(12,fs-2);x.style.fontSize=fs+"px"};
 };
 s.onerror=function(){document.querySelector("#s").textContent="Error al cargar texto"};
 document.body.appendChild(s);
