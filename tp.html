@@ -54,7 +54,7 @@ function render(s) {
   for (var p = 0; p < paras.length; p++) {
     if (p > 0) { var s2 = document.createElement("span"); s2.className = "p"; x.appendChild(s2) }
     var pw = paras[p].match(/\S+/g) || [];
-    for (var i = 0; i < pw.length; i++) { var spn = document.createElement("span"); spn.textContent = pw[i]; x.appendChild(spn) }
+    for (var i = 0; i < pw.length; i++) { var spn = document.createElement("span"); spn.textContent = pw[i]; x.appendChild(spn); x.appendChild(document.createTextNode(" ")) }
   }
   c = x.querySelectorAll("span:not(.p)"); H(); S(); R(); setup();
 }
