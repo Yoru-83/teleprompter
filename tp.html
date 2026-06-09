@@ -28,33 +28,39 @@ body{background:#0c0c1e;color:#cfcfd5;font-family:system-ui,-apple-system,sans-s
 </div>
 <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
 <script>
-var q = new URLSearchParams(location.search), t = q.get("t");
+var q = new URLSearchParams(location.search), t = q.get("t"), g = q.get("g"), sp, pl, T, spd, fs, x, c;
 if (!t && location.hash.length > 1) { var h = location.hash.slice(1); try { t = LZString.decompressFromEncodedURIComponent(h) || h } catch (e) { t = decodeURIComponent(h) } }
-if (!t) {
-  document.querySelector("#m").textContent = "Error: sin texto";
-  document.querySelector("#d").textContent = "URL: " + location.href;
-  throw "no text"
-}
-t = t.replace(/\+/g, " ");
-var w = t.match(/\S+/g) || [], sp = 0, pl = 0, T, spd = 300, fs = 22, x = document.querySelector("#x");
-if (!w.length) { document.querySelector("#m").textContent = "Texto vacío"; throw "empty" }
-x.innerHTML = "<span></span> ".repeat(w.length);
-for (var i = 0; i < w.length; i++) x.children[i].textContent = w[i];
-var c = x.children;
 function H() { for (var i = 0; i < c.length; i++) c[i].className = i == sp ? "c" : ""; document.querySelector("#w").textContent = (sp + 1) + "/" + c.length }
-function U() { if (pl) { P(); pl = 1; T = setInterval(N, spd); document.querySelector("#p").textContent = "⏸" } }
-function R() { document.querySelector("#dv").textContent = spd + "ms"; document.querySelector("#df").textContent = fs + "px" }
-H(); S(); R();
 function S() { var e = c[sp]; if (!e) return; var r = e.getBoundingClientRect(), h = window.innerHeight; if (r.bottom > h * 0.75 || r.top < 0) x.scrollBy({ top: r.top - h * 0.3, behavior: 'smooth' }) }
 function N() { sp < c.length - 1 ? (sp++, H(), S()) : P() }
 function P() { pl = 0; if (T) { clearInterval(T); T = null } document.querySelector("#p").textContent = "▶" }
-document.querySelector("#b").style.display = "flex";
-document.querySelector("#s").style.display = "none";
-document.querySelector("#p").onclick = function () { if (pl) P(); else { pl = 1; this.textContent = "⏸"; T = setInterval(N, spd) } };
-document.querySelector("#r").onclick = function () { P(); sp = 0; H(); S() };
-document.querySelector("#vp").onclick = function () { spd = Math.max(50, spd - 30); R(); U() };
-document.querySelector("#vm").onclick = function () { spd = Math.min(2000, spd + 30); R(); U() };
-document.querySelector("#fp").onclick = function () { fs = Math.min(60, fs + 2); x.style.fontSize = fs + "px"; R() };
-document.querySelector("#fm").onclick = function () { fs = Math.max(12, fs - 2); x.style.fontSize = fs + "px"; R() };
+function U() { if (pl) { P(); pl = 1; T = setInterval(N, spd); document.querySelector("#p").textContent = "⏸" } }
+function R() { document.querySelector("#dv").textContent = spd + "ms"; document.querySelector("#df").textContent = fs + "px" }
+function setup() {
+  document.querySelector("#b").style.display = "flex"; document.querySelector("#s").style.display = "none";
+  document.querySelector("#p").onclick = function () { if (pl) P(); else { pl = 1; this.textContent = "⏸"; T = setInterval(N, spd) } };
+  document.querySelector("#r").onclick = function () { P(); sp = 0; H(); S() };
+  document.querySelector("#vp").onclick = function () { spd = Math.max(50, spd - 30); R(); U() };
+  document.querySelector("#vm").onclick = function () { spd = Math.min(2000, spd + 30); R(); U() };
+  document.querySelector("#fp").onclick = function () { fs = Math.min(60, fs + 2); x.style.fontSize = fs + "px"; R() };
+  document.querySelector("#fm").onclick = function () { fs = Math.max(12, fs - 2); x.style.fontSize = fs + "px"; R() };
+}
+function render(s) {
+  s = s.replace(/\+/g, " ");
+  var w = s.match(/\S+/g) || [];
+  if (!w.length) { document.querySelector("#m").textContent = "Texto vacío"; return }
+  x = document.querySelector("#x"); sp = 0; pl = 0; T = null; spd = 300; fs = 22;
+  x.innerHTML = "<span></span> ".repeat(w.length);
+  for (var i = 0; i < w.length; i++) x.children[i].textContent = w[i];
+  c = x.children; H(); S(); R(); setup();
+}
+if (t) { render(t) }
+else if (g) {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "https://api.github.com/gists/" + g, true);
+  xhr.onload = function () { try { var d = JSON.parse(xhr.responseText), k = Object.keys(d.files)[0]; if (k) render(d.files[k].content) } catch (e) { document.querySelector("#m").textContent = "Error Gist" } };
+  xhr.onerror = function () { document.querySelector("#m").textContent = "Error red" };
+  xhr.send();
+} else { document.querySelector("#m").textContent = "Error: sin texto"; document.querySelector("#d").textContent = "URL: " + location.href; throw "no text" }
 </script>
 </html>
