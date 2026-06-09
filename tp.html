@@ -26,9 +26,10 @@ body{background:#0c0c1e;color:#cfcfd5;font-family:system-ui,-apple-system,sans-s
 <span class=s>Tam</span><button id=fm>−</button><span id=df></span><button id=fp>+</button>
 <span id=w>0/0</span>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
 <script>
 var q = new URLSearchParams(location.search), t = q.get("t");
-if (!t && location.hash.length > 1) t = decodeURIComponent(location.hash.slice(1));
+if (!t && location.hash.length > 1) { var h = location.hash.slice(1); try { t = LZString.decompressFromEncodedURIComponent(h) || h } catch (e) { t = decodeURIComponent(h) } }
 if (!t) {
   document.querySelector("#m").textContent = "Error: sin texto";
   document.querySelector("#d").textContent = "URL: " + location.href;
