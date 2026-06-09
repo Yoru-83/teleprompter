@@ -46,13 +46,16 @@ function setup() {
   document.querySelector("#fm").onclick = function () { fs = Math.max(12, fs - 2); x.style.fontSize = fs + "px"; R() };
 }
 function render(s) {
-  s = s.replace(/\+/g, " ");
-  var w = s.match(/\S+/g) || [];
-  if (!w.length) { document.querySelector("#m").textContent = "Texto vacío"; return }
+  s = s.replace(/\+/g, " ").replace(/\r\n/g, "\n");
+  var paras = s.split(/\n{2,}/);
   x = document.querySelector("#x"); sp = 0; pl = 0; T = null; spd = 300; fs = 22;
-  x.innerHTML = "<span></span> ".repeat(w.length);
-  for (var i = 0; i < w.length; i++) x.children[i].textContent = w[i];
-  c = x.children; H(); S(); R(); setup();
+  x.innerHTML = "";
+  for (var p = 0; p < paras.length; p++) {
+    if (p > 0) { var d = document.createElement("div"); d.style.height = "1.2em"; x.appendChild(d) }
+    var pw = paras[p].match(/\S+/g) || [];
+    for (var i = 0; i < pw.length; i++) { var spn = document.createElement("span"); spn.textContent = pw[i]; x.appendChild(spn) }
+  }
+  c = x.querySelectorAll("span"); H(); S(); R(); setup();
 }
 if (t) { render(t) }
 else if (g) {
